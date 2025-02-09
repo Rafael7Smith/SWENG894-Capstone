@@ -9,4 +9,4 @@
 ### Non-Functional Requirements
 
 ### Architecture
-![alt text](https://github.com/Rafael7Smith/SWENG894-Capstone/tree/main/Readme_images/Architecture.png?raw=true)
+![alt text](https://github.com/Rafael7Smith/SWENG894-Capstone/tree/main/Readme_images/Architecture.png)
