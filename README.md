@@ -1,12 +1,16 @@
 # SWENG894-Capstone Project
 ## Open Vision Management
 ### Description
+As a part of the PennState University Software Engineering Masters program, SWENG 894 Capstone Experience course requires development of a capstone project,  including project management.
+
+The aim of Open Vision Management is to provide an at home, locally hosted camera management application. The management includes the ability to view a live feed of any connected cameras, recording of those video feeds to a storage device and a user interface to control these functions.
 
 ### Features
 - WAN/LAN Connection to IP Cameras on the same network 
 - Display of livestream of IP Cameras on the same network 
 - Recording of IP Camera’s video feed 
 - UI Interface 
+
 ### Software Requirements
 | ID # | Description | 
 | ------ | --------------------- |
