@@ -3,7 +3,7 @@
   <FileVersion major="1" minor="17"/>
   <object class="Project" expanded="true">
     <property name="class_decoration">; </property>
-    <property name="code_generation">C++</property>
+    <property name="code_generation">Python</property>
     <property name="disconnect_events">1</property>
     <property name="disconnect_mode">source_name</property>
     <property name="disconnect_php_events">0</property>
@@ -11,7 +11,7 @@
     <property name="embedded_files_path">res</property>
     <property name="encoding">UTF-8</property>
     <property name="event_generation">connect</property>
-    <property name="file"></property>
+    <property name="file">OVM_UI</property>
     <property name="first_id">1000</property>
     <property name="help_provider">none</property>
     <property name="image_path_wrapper_function_name"></property>
@@ -19,7 +19,7 @@
     <property name="internationalize">0</property>
     <property name="name">OVM</property>
     <property name="namespace"></property>
-    <property name="path">.</property>
+    <property name="path">C:\Users\Alter\OneDrive\Documents\Graduate School\SWENG 894\SWENG894-Capstone</property>
     <property name="precompiled_header"></property>
     <property name="relative_path">1</property>
     <property name="skip_lua_events">1</property>
@@ -46,12 +46,12 @@
       <property name="id">wxID_ANY</property>
       <property name="maximum_size"></property>
       <property name="minimum_size"></property>
-      <property name="name">MyFrame1</property>
+      <property name="name">OVM_Frame</property>
       <property name="pos"></property>
       <property name="size">500,300</property>
       <property name="style">wxDEFAULT_FRAME_STYLE</property>
       <property name="subclass">; ; forward_declare</property>
-      <property name="title"></property>
+      <property name="title">Open Vision Managment</property>
       <property name="tooltip"></property>
       <property name="two_step_creation">0</property>
       <property name="window_extra_style"></property>
@@ -70,7 +70,7 @@
         <property name="id">wxID_ANY</property>
         <property name="maximum_size"></property>
         <property name="minimum_size"></property>
-        <property name="name">m_menubar1</property>
+        <property name="name">m_menubar</property>
         <property name="permission">protected</property>
         <property name="pos"></property>
         <property name="size"></property>
