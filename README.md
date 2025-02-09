@@ -36,3 +36,9 @@ The aim of Open Vision Management is to provide an at home, locally hosted camer
 
 ### Architecture
 ![alt text](https://github.com/Rafael7Smith/SWENG894-Capstone/tree/main/Readme_images/Architecture.png)
+
+### Development
+
+### Libraries
+
+### Usage
