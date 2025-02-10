@@ -7,6 +7,7 @@
 ## PLEASE DO *NOT* EDIT THIS FILE!
 ###########################################################################
 
+from CustomUI.VideoPanel import VideoPanel
 import wx
 import wx.xrc
 
@@ -40,10 +41,12 @@ class OVM_Frame ( wx.Frame ):
 
 		bSizer1 = wx.BoxSizer( wx.VERTICAL )
 
-		self.m_panel1 = wx.Panel( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+		self.m_panel1 = VideoPanel( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		bSizer1.Add( self.m_panel1, 1, wx.EXPAND |wx.ALL, 5 )
 
 		self.m_panel2 = wx.Panel( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+		self.m_panel2.Hide()
+
 		bSizer1.Add( self.m_panel2, 1, wx.EXPAND |wx.ALL, 5 )
 
 

@@ -2,6 +2,7 @@
 
 import wx
 import OVM_UI
+import CustomUI.VideoPanel
 
 # Implementing OVM_Frame
 class OVM_UI_Adapater( OVM_UI.OVM_Frame ):
