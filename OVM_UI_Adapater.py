@@ -2,10 +2,59 @@
 
 import wx
 import OVM_UI
-import CustomUI.VideoPanel
 
 # Implementing OVM_Frame
 class OVM_UI_Adapater( OVM_UI.OVM_Frame ):
 	def __init__( self, parent ):
 		OVM_UI.OVM_Frame.__init__( self, parent )
 
+		# Set starting configuration
+		self.panel_mainsettings.Hide()
+		self.panel_mainvideo.Show()
+
+	########### Event Handler implementation ###########
+	def Handle_MenuItem_Video( self, event ):
+		self.panel_mainsettings.Hide()
+		self.panel_mainvideo.Show()
+
+		self.Layout()
+		self.Refresh()
+		return
+
+	def Handle_MenuItem_Settings( self, event ):
+		self.panel_mainsettings.Show()
+		self.panel_mainvideo.Hide()
+
+		self.Layout()
+		self.Refresh()
+		return
+
+	def Handle_MenuItem_Exit( self, event ):
+		self.Close(True)
+		return
+	
+	def Handle_CameraChkLst_Toggle( self, event ):
+		self.todo_feature_test()
+		event.Skip()
+
+	def Handle_Setting_NewCameraBtn( self, event ):
+		self.todo_feature_test()
+		event.Skip()
+
+	def Handle_Setting_RemoveCameraBtn( self, event ):
+		self.todo_feature_test()
+		event.Skip()
+
+	def Handle_Setting_EnDisSaving( self, event ):
+		self.todo_feature_test()
+		event.Skip()
+
+	def Handle_Setting_SaveLocation( self, event ):
+		self.todo_feature_test()
+		event.Skip()
+
+	########### End Event Handler Implementation ###########
+
+	def todo_feature_test(self):
+		wx.MessageBox("Todo Feature")
+		return

@@ -10,7 +10,7 @@ print(f"Open Vision Management Startup")
 
 app = wx.App()
 
-frame = OVM_UI_Adapater.OVM_UI.OVM_Frame(None)
+frame = OVM_UI_Adapater.OVM_UI_Adapater(None)
 
 frame.Show()
 
