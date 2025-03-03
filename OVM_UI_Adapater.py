@@ -2,6 +2,8 @@
 
 import wx
 import OVM_UI
+from CustomUI.VideoPanel import VideoPanel
+import numpy as np
 
 # Implementing OVM_Frame
 class OVM_UI_Adapater( OVM_UI.OVM_Frame ):
@@ -11,6 +13,24 @@ class OVM_UI_Adapater( OVM_UI.OVM_Frame ):
 		# Set starting configuration
 		self.panel_mainsettings.Hide()
 		self.panel_mainvideo.Show()
+		self.Video_NumFeeds_Sldr.SetValue(2)
+		self.Video_CycleCams_chkBox.SetValue(False)
+
+		# Data store Model for Video Panels
+		self.video_panels = []
+
+		# Data store Model for Cameras
+		self.camera_list = []
+		
+		# Add inital Panels to panel list
+		self.video_panels.append(self.Video_videoPanel_0)
+		self.video_panels.append(self.Video_videoPanel_1)
+
+		# Test Code
+		self.Video_videoPanel_0.change_source()
+		self.Video_videoPanel_0.start_stream()
+		self.Video_videoPanel_1.change_source()
+		self.Video_videoPanel_1.start_stream()
 
 	########### Event Handler implementation ###########
 	def Handle_MenuItem_Video( self, event ):
@@ -33,6 +53,17 @@ class OVM_UI_Adapater( OVM_UI.OVM_Frame ):
 		self.Close(True)
 		return
 	
+	def Handle_Video_EnDisCycle( self, event ):
+		self.todo_feature_test()
+		event.Skip()
+
+	def Handle_Video_NumFeeds( self, event ):
+		num_videos = self.Video_NumFeeds_Sldr.GetValue()
+		#only update if the number changed from whats currently displayed
+		if(len(self.video_panels) != num_videos):
+			self.update_video_panels(num_videos)
+		event.Skip()
+
 	def Handle_CameraChkLst_Toggle( self, event ):
 		self.todo_feature_test()
 		event.Skip()
@@ -54,6 +85,33 @@ class OVM_UI_Adapater( OVM_UI.OVM_Frame ):
 		event.Skip()
 
 	########### End Event Handler Implementation ###########
+
+	def update_video_panels(self, num_feeds):
+		#Stop and remove existing panels if reducing the number
+		while len(self.video_panels) > num_feeds:
+			videoPanel = self.video_panels.pop()
+			
+			videoPanel.stop_stream()
+			videoPanel.Destroy()
+
+		# Create new panels if increasing the number, Add to tracking list, add to the sizer
+		while len(self.video_panels) < num_feeds:
+			#TODO: Pull rtsp source from another list
+			videoPanel = VideoPanel(self.panel_mainvideo, 0)
+			self.video_panels.append(videoPanel)
+			self.gridsizer_videofeeds.Add(videoPanel,1,wx.EXPAND)
+
+		# Restart Streams on the panels
+		for videoPanel in self.video_panels:
+			videoPanel.start_stream()
+
+		#Update layout and refresh
+		if(num_feeds == 1):
+			self.gridsizer_videofeeds.SetCols(1)
+		else:
+			self.gridsizer_videofeeds.SetCols(2)
+		self.gridsizer_videofeeds.Layout()
+		self.Layout()
 
 	def todo_feature_test(self):
 		wx.MessageBox("Todo Feature")
