@@ -257,7 +257,7 @@ class OVM_Frame ( wx.Frame ):
 		self.Bind( wx.EVT_MENU, self.Handle_MenuItem_Settings, id = self.FileMenuItem_Settings.GetId() )
 		self.Bind( wx.EVT_MENU, self.Handle_MenuItem_Exit, id = self.FileMenuItem_Exit.GetId() )
 		self.Video_CycleCams_chkBox.Bind( wx.EVT_CHECKBOX, self.Handle_Video_EnDisCycle )
-		self.Video_NumFeeds_Sldr.Bind( wx.EVT_SCROLL, self.Handle_Video_NumFeeds )
+		self.Video_NumFeeds_Sldr.Bind( wx.EVT_SCROLL_CHANGED, self.Handle_Video_NumFeeds )
 		self.Video_AvailCams_chkLst.Bind( wx.EVT_CHECKLISTBOX, self.Handle_CameraChkLst_Toggle )
 		self.Settings_AddCam_btn.Bind( wx.EVT_BUTTON, self.Handle_Setting_NewCameraBtn )
 		self.Settings_DelCam_btn.Bind( wx.EVT_BUTTON, self.Handle_Setting_RemoveCameraBtn )
