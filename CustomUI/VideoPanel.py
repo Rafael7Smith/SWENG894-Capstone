@@ -3,8 +3,6 @@ Custom implementation of a WxPanel that will display a video from a given source
 """
 import wx
 import cv2
-import ffmpeg
-import vlc
 import threading
 
 
@@ -32,6 +30,7 @@ class VideoPanel(wx.Panel):
         self.Bind(wx.EVT_PAINT, self.on_paint)
 
     def start_stream(self):
+        print("Starting stream of: " + str(self.rtsp_url))
         if self.capture_thread is not None and self.capture_thread.is_alive():
             self.stop_stream()
 
@@ -54,21 +53,14 @@ class VideoPanel(wx.Panel):
         if(self.rtsp_url == 0):
             cap = cv2.VideoCapture(self.rtsp_url)
         else:
-            print("Attempting Video Capture for: " + self.rtsp_url)
-            cap = cv2.VideoCapture(self.rtsp_url, cv2.CAP_FFMPEG)
+            cap = cv2.VideoCapture(self.rtsp_url)
         
-        print("Finished VideoCapture Call")
         if(cap.isOpened()):
-            print("just before while")
             while not self.stop_event.is_set():
                 ret, frame = cap.read()
-                print("Attempt read on: " + str(self.rtsp_url))
                 if ret:
                     self.error_text.Hide()
                     self.frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-                    # cv2.imshow('RTSP Stream', frame)
-                    # if cv2.waitKey(1) & 0xFF == ord('q'):
-                    #     break
                     self.Refresh()
                 else:
                     print("error in video stream")
@@ -76,9 +68,12 @@ class VideoPanel(wx.Panel):
                     self.error_text.SetLabelText("Error in Camera\n" + str(self.rtsp_url))
                     self.Refresh()
                     break
-            print("after while")
         else:
             print("Failed to open for: " + self.rtsp_url)
+            self.error_text.Show()
+            self.error_text.SetLabelText("Error in Camera\n" + str(self.rtsp_url))
+            self.Refresh()
+            self.stop_stream()
         cap.release()
 
     def update_frame(self, event):

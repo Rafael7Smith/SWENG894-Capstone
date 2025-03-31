@@ -15,7 +15,7 @@ class OVM_UI_Adapater( OVM_UI.OVM_Frame ):
 		# Set starting configuration
 		self.panel_mainsettings.Hide()
 		self.panel_mainvideo.Show()
-		self.Video_NumFeeds_Sldr.SetValue(2)
+		self.Video_NumFeeds_Sldr.SetValue(4)
 		self.Video_CycleCams_chkBox.SetValue(False)
 		self.Video_AvailCams_chkLst.Clear()
 
@@ -34,7 +34,7 @@ class OVM_UI_Adapater( OVM_UI.OVM_Frame ):
 		self.video_panels.append(self.Video_videoPanel_1)
 
 		#Update video feeds:
-		self.update_video_panels(2)
+		self.update_video_panels(4)
 
 		# # Test Code
 		# self.Video_videoPanel_0.change_source()
@@ -123,7 +123,7 @@ class OVM_UI_Adapater( OVM_UI.OVM_Frame ):
 			self.gridsizer_videofeeds.Add(videoPanel,1,wx.EXPAND)
 
 		# Set sources and Restart Streams on the panels
-		for panel_num, videoPanel in enumerate(self.video_panels):
+		for panel_num, selectedPanel in enumerate(self.video_panels):
 			if(len(self.camera_list) > panel_num):
 				camera_feed = self.camera_list[panel_num].get_Address()
 				if camera_feed == "localhost":
@@ -131,8 +131,8 @@ class OVM_UI_Adapater( OVM_UI.OVM_Frame ):
 			else:
 				camera_feed = 0
 			print("Setting source of panel: " + str(panel_num) + " to: " + str(camera_feed))
-			videoPanel.set_source(camera_feed)
-			videoPanel.start_stream()
+			selectedPanel.set_source(camera_feed)
+			selectedPanel.start_stream()
 
 		#Update layout and refresh
 		if(num_feeds == 1):
@@ -162,7 +162,11 @@ class OVM_UI_Adapater( OVM_UI.OVM_Frame ):
 	def debug_populate_cameras(self):
 		"rtsp://ekbc:7478sm@mobileb-smith.hopto.org/channel=1"
 		"rtsp://raf:rafraf@mobilebsmith.hopto.org/main_1"
-		address_list = ["rtsp://raf:rafraf@142.196.231.255?stream=1.sdp", "rtsp://raf:rafraf@142.196.231.255?stream=2.sdp","localhost"]
+		"192.168.43.100"
+		"rtsp://raf:rafraf@142.196.231.255?stream=1.sdp" "rtsp://raf:rafraf@142.196.231.255?stream=2.sdp"
+		"rtsp://142.196.231.255:554/user=raf&password=rafraf&channel=1&stream=1.sdp"
+		"rtsp://192.168.43.100:554/user=raf&password=rafraf&channel=1&stream=1.sdp"
+		address_list = ["rtsp://142.196.231.255:554/user=raf&password=rafraf&channel=1&stream=1.sdp","rtsp://192.168.43.100:554/user=raf&password=rafraf&channel=1&stream=1.sdp","rtsp://192.168.43.100:554/user=raf&password=rafraf&channel=2&stream=1.sdp" ,"rtsp://192.168.43.100:554/user=raf&password=rafraf&channel=3&stream=1.sdp","rtsp://192.168.43.100:554/user=raf&password=rafraf&channel=4&stream=1.sdp"]
 		for num, address in  enumerate(address_list):
 			name = "Camera " + str(num)
 			camera = Camera(name, address)
