@@ -62,7 +62,7 @@ class OVM_Frame ( wx.Frame ):
 
 		sbSizer1.Add( bSizer32, 0, wx.EXPAND, 5 )
 
-		Video_AvailCams_chkLstChoices = [u"Cam 1", u"Cam 2", u"Cam 3"]
+		Video_AvailCams_chkLstChoices = [u"Cam 1", u"Cam 2", u"Cam 3", u"Cam 4", u"Cam 5", u"Cam 6", u"Cam 7", u"Cam 8"]
 		self.Video_AvailCams_chkLst = wx.CheckListBox( sbSizer1.GetStaticBox(), wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, Video_AvailCams_chkLstChoices, 0 )
 		sbSizer1.Add( self.Video_AvailCams_chkLst, 1, wx.ALL|wx.EXPAND, 5 )
 
@@ -77,6 +77,12 @@ class OVM_Frame ( wx.Frame ):
 		self.Video_videoPanel_1 = VideoPanel( self.panel_mainvideo, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.BORDER_THEME )
 		self.gridsizer_videofeeds.Add( self.Video_videoPanel_1, 1, wx.EXPAND |wx.ALL, 5 )
 
+		self.Video_videoPanel_11 = VideoPanel( self.panel_mainvideo, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.BORDER_THEME )
+		self.gridsizer_videofeeds.Add( self.Video_videoPanel_11, 1, wx.EXPAND |wx.ALL, 5 )
+
+		self.Video_videoPanel_12 = VideoPanel( self.panel_mainvideo, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.BORDER_THEME )
+		self.gridsizer_videofeeds.Add( self.Video_videoPanel_12, 1, wx.EXPAND |wx.ALL, 5 )
+
 
 		bSizer3.Add( self.gridsizer_videofeeds, 3, wx.EXPAND, 5 )
 
@@ -87,8 +93,6 @@ class OVM_Frame ( wx.Frame ):
 		bSizer1.Add( self.panel_mainvideo, 1, wx.EXPAND |wx.ALL, 5 )
 
 		self.panel_mainsettings = wx.Panel( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
-		self.panel_mainsettings.Hide()
-
 		bSizer2 = wx.BoxSizer( wx.VERTICAL )
 
 		self.staticText_SettingsTitle = wx.StaticText( self.panel_mainsettings, wx.ID_ANY, u"Settings Menu", wx.DefaultPosition, wx.DefaultSize, 0 )

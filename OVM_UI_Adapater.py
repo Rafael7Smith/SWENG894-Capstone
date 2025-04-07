@@ -19,10 +19,12 @@ class OVM_UI_Adapater( OVM_UI.OVM_Frame ):
 		self.Video_CycleCams_chkBox.SetValue(False)
 		self.Video_AvailCams_chkLst.Clear()
 
-
-
 		# Data store Model for Video Panels
 		self.video_panels = []
+		self.video_panels.append(self.Video_videoPanel_0)
+		self.video_panels.append(self.Video_videoPanel_1)
+		self.video_panels.append(self.Video_videoPanel_11)
+		self.video_panels.append(self.Video_videoPanel_12)
 
 		# Data store Model for Cameras
 		self.camera_list = []
@@ -133,6 +135,7 @@ class OVM_UI_Adapater( OVM_UI.OVM_Frame ):
 
 		# Get a list of enabled cameras
 		enabled_cameras = self.get_Enabled_Cameras()
+
 		# Set sources and Restart Streams on the panels
 		for panel_num, selectedPanel in enumerate(self.video_panels):
 			if(len(enabled_cameras) > panel_num):
@@ -140,7 +143,7 @@ class OVM_UI_Adapater( OVM_UI.OVM_Frame ):
 				if camera_feed == "localhost":
 					camera_feed = 0
 			else:
-				camera_feed = 0
+				break
 			print("Setting source of panel: " + str(panel_num) + " to: " + str(camera_feed))
 			selectedPanel.set_source(camera_feed)
 			selectedPanel.start_stream()
@@ -186,7 +189,13 @@ class OVM_UI_Adapater( OVM_UI.OVM_Frame ):
 		"rtsp://raf:rafraf@142.196.231.255?stream=1.sdp" "rtsp://raf:rafraf@142.196.231.255?stream=2.sdp"
 		"rtsp://142.196.231.255:554/user=raf&password=rafraf&channel=1&stream=1.sdp"
 		"rtsp://192.168.43.100:554/user=raf&password=rafraf&channel=1&stream=1.sdp"
-		address_list = ["rtsp://raf:rafraf@142.196.231.255:554/Streaming/Channels/1","rtsp://raf:rafraf@142.196.231.255:554/Streaming/Channels/2","rtsp://raf:rafraf@142.196.231.255:554/Streaming/Channels/3","rtsp://raf:rafraf@142.196.231.255:554/Streaming/Channels/4"]
+		"rtsp://raf:rafraf@mobilebsmith.hopto.org/channel=1?stream=1.sdp"
+		address_list = [
+				"rtsp://raf:rafraf@mobilebsmith.hopto.org/channel=1?stream=1.sdp",
+				"rtsp://raf:rafraf@mobilebsmith.hopto.org/channel=2?stream=1.sdp",
+				"rtsp://raf:rafraf@mobilebsmith.hopto.org/channel=3?stream=1.sdp",
+				"rtsp://raf:rafraf@mobilebsmith.hopto.org/channel=4?stream=1.sdp"
+				]
 		# address_list = ["rtsp://142.196.231.255:554/user=raf&password=rafraf&channel=1&stream=1.sdp","rtsp://142.196.231.255:554/user=raf&password=rafraf&channel=2&stream=1.sdp", "rtsp://142.196.231.255:554/user=raf&password=rafraf&channel=3&stream=1.sdp","rtsp://142.196.231.255:554/user=raf&password=rafraf&channel=4&stream=1.sdp"]
 		for num, address in  enumerate(address_list):
 			name = "Debug Camera " + str(num)
