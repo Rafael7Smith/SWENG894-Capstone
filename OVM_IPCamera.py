@@ -2,6 +2,7 @@ class Camera():
     def __init__(self, name, address):
         self.camera_name = name
         self.camera_address = address
+        self.camera_enabled = False
 
     def get_Address(self):
         return self.camera_address
@@ -9,6 +10,12 @@ class Camera():
     def get_Name(self):
         return self.camera_name
     
+    def is_Enabled(self):
+        return self.camera_enabled
+    
+    def set_Enable(self, state):
+        self.camera_enabled = state
+
     def enable(self):
         self.camera_enabled = True
     

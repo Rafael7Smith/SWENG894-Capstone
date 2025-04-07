@@ -1,6 +1,7 @@
 """
 Custom implementation of a WxPanel that will display a video from a given source
 """
+
 import wx
 import cv2
 import threading
@@ -29,8 +30,14 @@ class VideoPanel(wx.Panel):
         self.frame = None
         self.Bind(wx.EVT_PAINT, self.on_paint)
 
+        #Recording Video Function
+        self.recording = False
+        self.video_writer = None
+        self.start_time = None
+        self.duration = 0
+
     def start_stream(self):
-        print("Starting stream of: " + str(self.rtsp_url))
+        
         if self.capture_thread is not None and self.capture_thread.is_alive():
             self.stop_stream()
 
@@ -38,43 +45,36 @@ class VideoPanel(wx.Panel):
         self.capture_thread = threading.Thread(target=self.capture_frames)
         self.capture_thread.daemon = True
         self.capture_thread.start()
+        print("Starting stream of: " + str(self.rtsp_url) +"\nOn Thread: " + self.capture_thread.name)
         self.timer.Start(1000 // 30)  # Refresh at 30 frames per second
 
     def stop_stream(self):
         self.stop_event.set()
-        if self.capture_thread is not None:
-            self.capture_thread.join()
+        if self.capture_thread is not None and self.capture_thread.is_alive():
+            print("Stopping Thread: " + self.capture_thread.name)
+            self.capture_thread.join() 
         self.timer.Stop()
 
     def set_source(self, rtsp_url=0):
         self.rtsp_url = rtsp_url
 
     def capture_frames(self):
-        if(self.rtsp_url == 0):
+        try:
             cap = cv2.VideoCapture(self.rtsp_url)
-        else:
-            cap = cv2.VideoCapture(self.rtsp_url)
-        
-        if(cap.isOpened()):
             while not self.stop_event.is_set():
-                ret, frame = cap.read()
-                if ret:
-                    self.error_text.Hide()
-                    self.frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-                    self.Refresh()
+                if(cap.isOpened()):
+                    ret, frame = cap.read()
+                    if ret:
+                        self.error_text.Hide()
+                        self.frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
                 else:
-                    print("error in video stream")
-                    self.error_text.Show()
-                    self.error_text.SetLabelText("Error in Camera\n" + str(self.rtsp_url))
-                    self.Refresh()
-                    break
-        else:
-            print("Failed to open for: " + self.rtsp_url)
-            self.error_text.Show()
-            self.error_text.SetLabelText("Error in Camera\n" + str(self.rtsp_url))
-            self.Refresh()
-            self.stop_stream()
-        cap.release()
+                    print(f"Stream {self.rtsp_url} disconnected")
+                    # try and fix the stream
+                    cap.release()
+                    cap = cv2.VideoCapture(self.rtsp_url)
+                    #break
+        except Exception as e:
+            print(f"Error in Stream {self.rtsp_url}\n{e}\n")
 
     def update_frame(self, event):
         self.Refresh()

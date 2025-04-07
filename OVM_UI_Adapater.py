@@ -4,7 +4,7 @@ import wx
 import OVM_UI
 from CustomUI.VideoPanel import VideoPanel
 from OVM_IPCamera import Camera
-import numpy as np
+
 
 DEBUG = True
 # Implementing OVM_Frame
@@ -19,28 +19,25 @@ class OVM_UI_Adapater( OVM_UI.OVM_Frame ):
 		self.Video_CycleCams_chkBox.SetValue(False)
 		self.Video_AvailCams_chkLst.Clear()
 
+
+
 		# Data store Model for Video Panels
 		self.video_panels = []
 
 		# Data store Model for Cameras
 		self.camera_list = []
+		self.enabled_camera_list = []
+
+		# Data store model for Application settings
+		self.settings_model = None
+			#TODO: Sprint 3 Tickets #25 and #26 to save and load settings functionality
 
 		# Populate a debug list of cameras
 		if(DEBUG):
 			self.debug_populate_cameras()
 
-		# Add inital Panels to panel list
-		self.video_panels.append(self.Video_videoPanel_0)
-		self.video_panels.append(self.Video_videoPanel_1)
+		self.Show()
 
-		#Update video feeds:
-		self.update_video_panels(4)
-
-		# # Test Code
-		# self.Video_videoPanel_0.change_source()
-		# self.Video_videoPanel_0.start_stream()
-		# self.Video_videoPanel_1.change_source()
-		# self.Video_videoPanel_1.start_stream()
 
 	########### Event Handler implementation ###########
 	def Handle_MenuItem_Video( self, event ):
@@ -77,7 +74,19 @@ class OVM_UI_Adapater( OVM_UI.OVM_Frame ):
 		event.Skip()
 
 	def Handle_CameraChkLst_Toggle( self, event ):
-		self.todo_feature_test()
+		# Get the name and state changed camera
+		cam_name = self.Video_AvailCams_chkLst.GetString(event.GetInt())
+		cam_state = self.Video_AvailCams_chkLst.IsChecked(event.GetInt())
+
+		# Find the camera in the list and update its state
+		for camera in self.camera_list:
+			if camera.get_Name() == cam_name:
+				camera.set_Enable(cam_state)
+
+		# Refresh the cameras
+		self.update_video_panels(self.Video_NumFeeds_Sldr.GetValue())
+
+		# self.todo_feature_test("Camera: " + str(event.GetInt()) + " " + cam_name)
 		event.Skip()
 
 	def Handle_Setting_NewCameraBtn( self, event ):
@@ -122,10 +131,12 @@ class OVM_UI_Adapater( OVM_UI.OVM_Frame ):
 			self.video_panels.append(videoPanel)
 			self.gridsizer_videofeeds.Add(videoPanel,1,wx.EXPAND)
 
+		# Get a list of enabled cameras
+		enabled_cameras = self.get_Enabled_Cameras()
 		# Set sources and Restart Streams on the panels
 		for panel_num, selectedPanel in enumerate(self.video_panels):
-			if(len(self.camera_list) > panel_num):
-				camera_feed = self.camera_list[panel_num].get_Address()
+			if(len(enabled_cameras) > panel_num):
+				camera_feed = enabled_cameras[panel_num].get_Address()
 				if camera_feed == "localhost":
 					camera_feed = 0
 			else:
@@ -143,6 +154,13 @@ class OVM_UI_Adapater( OVM_UI.OVM_Frame ):
 		self.gridsizer_videofeeds.Layout()
 		self.Layout()
 
+	def get_Enabled_Cameras(self):
+		enabled_cameras = []
+		for camera in self.camera_list:
+			if camera.is_Enabled():
+				enabled_cameras.append(camera)
+		return enabled_cameras
+	
 	def update_CameraLists(self):
 		#clean out the Video Feed panel  and setting panel lists
 		self.Video_AvailCams_chkLst.Clear()
@@ -150,13 +168,15 @@ class OVM_UI_Adapater( OVM_UI.OVM_Frame ):
 
 		#Repopulate both
 		for camera in self.camera_list:
-			self.Video_AvailCams_chkLst.Append(camera.get_Name())
+			index = self.Video_AvailCams_chkLst.Append(camera.get_Name())
+			if camera.is_Enabled():
+				self.Video_AvailCams_chkLst.Check(index)
 			self.Settings_CamList_chkLst.Append(camera.get_Name())
 
 		return
 	
-	def todo_feature_test(self):
-		wx.MessageBox("Todo Feature")
+	def todo_feature_test(self, string = "Todo Feature"):
+		wx.MessageBox(string)
 		return
 	
 	def debug_populate_cameras(self):
@@ -166,11 +186,15 @@ class OVM_UI_Adapater( OVM_UI.OVM_Frame ):
 		"rtsp://raf:rafraf@142.196.231.255?stream=1.sdp" "rtsp://raf:rafraf@142.196.231.255?stream=2.sdp"
 		"rtsp://142.196.231.255:554/user=raf&password=rafraf&channel=1&stream=1.sdp"
 		"rtsp://192.168.43.100:554/user=raf&password=rafraf&channel=1&stream=1.sdp"
-		address_list = ["rtsp://142.196.231.255:554/user=raf&password=rafraf&channel=1&stream=1.sdp","rtsp://192.168.43.100:554/user=raf&password=rafraf&channel=1&stream=1.sdp","rtsp://192.168.43.100:554/user=raf&password=rafraf&channel=2&stream=1.sdp" ,"rtsp://192.168.43.100:554/user=raf&password=rafraf&channel=3&stream=1.sdp","rtsp://192.168.43.100:554/user=raf&password=rafraf&channel=4&stream=1.sdp"]
+		address_list = ["rtsp://raf:rafraf@142.196.231.255:554/Streaming/Channels/1","rtsp://raf:rafraf@142.196.231.255:554/Streaming/Channels/2","rtsp://raf:rafraf@142.196.231.255:554/Streaming/Channels/3","rtsp://raf:rafraf@142.196.231.255:554/Streaming/Channels/4"]
+		# address_list = ["rtsp://142.196.231.255:554/user=raf&password=rafraf&channel=1&stream=1.sdp","rtsp://142.196.231.255:554/user=raf&password=rafraf&channel=2&stream=1.sdp", "rtsp://142.196.231.255:554/user=raf&password=rafraf&channel=3&stream=1.sdp","rtsp://142.196.231.255:554/user=raf&password=rafraf&channel=4&stream=1.sdp"]
 		for num, address in  enumerate(address_list):
-			name = "Camera " + str(num)
+			name = "Debug Camera " + str(num)
 			camera = Camera(name, address)
+			camera.enable()
 			print("Added " + camera.to_String())
 			self.camera_list.append(camera)
 			self.update_CameraLists()
+		
+		self.update_video_panels(len(address_list))
 			
