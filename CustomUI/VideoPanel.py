@@ -72,9 +72,14 @@ class VideoPanel(wx.Panel):
                     # try and fix the stream
                     cap.release()
                     cap = cv2.VideoCapture(self.rtsp_url)
-                    #break
+            print(f"Ending Stream for {self.rtsp_url}")
+            cap.release()
+            self.Refresh()
         except Exception as e:
             print(f"Error in Stream {self.rtsp_url}\n{e}\n")
+            self.error_text.Show()
+            self.error_text.SetLabelText("Error in Camera\n" + str(self.rtsp_url))
+            self.Refresh()
 
     def update_frame(self, event):
         self.Refresh()

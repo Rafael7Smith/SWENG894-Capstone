@@ -79,7 +79,7 @@ class OVM_UI_Adapater( OVM_UI.OVM_Frame ):
 		# Get the name and state changed camera
 		cam_name = self.Video_AvailCams_chkLst.GetString(event.GetInt())
 		cam_state = self.Video_AvailCams_chkLst.IsChecked(event.GetInt())
-
+		print(f"Camera {cam_name} was set to {cam_state}")
 		# Find the camera in the list and update its state
 		for camera in self.camera_list:
 			if camera.get_Name() == cam_name:
