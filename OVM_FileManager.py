@@ -7,7 +7,6 @@ class OVM_FileManager():
 
 
 def get_directory_size(directory):
-    """Calculate the total size of the directory in bytes."""
     total_size = 0
     for dirpath, dirnames, filenames in os.walk(directory):
         for f in filenames:
@@ -16,11 +15,12 @@ def get_directory_size(directory):
     return total_size
 
 def get_oldest_file(directory):
-    """Get the oldest file in the directory."""
     oldest_file = None
     oldest_time = None
     for dirpath, dirnames, filenames in os.walk(directory):
         for f in filenames:
+            # Filter for Mp4 files
+
             fp = os.path.join(dirpath, f)
             file_time = os.path.getctime(fp)
             if oldest_time is None or file_time < oldest_time:
@@ -29,12 +29,12 @@ def get_oldest_file(directory):
     return oldest_file
 
 def manage_directory(directory, size_limit):
-    """Monitor and manage the directory size."""
     while True:
         dir_size = get_directory_size(directory)
         print(f"Current directory size: {dir_size} bytes")
         
         if dir_size > size_limit:
+            #And check to have at least 2 files per camera
             oldest_file = get_oldest_file(directory)
             if oldest_file:
                 os.remove(oldest_file)
