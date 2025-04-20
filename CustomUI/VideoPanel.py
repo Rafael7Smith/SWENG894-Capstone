@@ -107,7 +107,7 @@ class VideoPanel(wx.Panel):
                         if self.recording:
                             current_time = time.time()
                             elapsed_time = current_time - self.start_time
-                            if elapsed_time >= self.duration:
+                            if elapsed_time >= (self.duration * 60): #Time measured in seconds, multiple to minutes
                                 self.start_new_recording()
                                 self.start_time = current_time
                             if self.video_writer:
