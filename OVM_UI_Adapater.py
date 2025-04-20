@@ -2,8 +2,10 @@
 
 import wx
 import OVM_UI
+import OVM_Settings_model
 from CustomUI.VideoPanel import VideoPanel
 from OVM_IPCamera import Camera
+
 
 
 DEBUG = True
@@ -31,13 +33,13 @@ class OVM_UI_Adapater( OVM_UI.OVM_Frame ):
 		self.enabled_camera_list = []
 
 		# Data store model for Application settings
-		self.settings_model = None
+		self.settings_model = OVM_Settings_model.OVM_Settings()
 			#TODO: Sprint 3 Tickets #25 and #26 to save and load settings functionality
 
 		# Populate a debug list of cameras
 		if(DEBUG):
 			self.debug_populate_cameras()
-
+  
 		self.Show()
 
 
@@ -129,7 +131,7 @@ class OVM_UI_Adapater( OVM_UI.OVM_Frame ):
 
 		# Create new panels if increasing the number, Add to tracking list, add to the sizer
 		while len(self.video_panels) < num_feeds:
-			videoPanel = VideoPanel(self.panel_mainvideo, 0)
+			videoPanel = VideoPanel(self.panel_mainvideo, 0, savePath=self.settings_model.getSavePath())
 			self.video_panels.append(videoPanel)
 			self.gridsizer_videofeeds.Add(videoPanel,1,wx.EXPAND)
 
@@ -146,6 +148,7 @@ class OVM_UI_Adapater( OVM_UI.OVM_Frame ):
 				break
 			print("Setting source of panel: " + str(panel_num) + " to: " + str(camera_feed))
 			selectedPanel.set_source(camera_feed)
+			selectedPanel.set_name(enabled_cameras[panel_num].get_Name())
 			selectedPanel.start_stream()
 
 		#Update layout and refresh
