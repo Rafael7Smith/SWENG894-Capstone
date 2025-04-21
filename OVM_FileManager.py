@@ -5,7 +5,6 @@ class OVM_FileManager():
     def __init__(self):
         pass
 
-
 def get_directory_size(directory):
     total_size = 0
     for dirpath, dirnames, filenames in os.walk(directory):
