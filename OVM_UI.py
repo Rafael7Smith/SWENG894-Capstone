@@ -7,7 +7,6 @@
 ## PLEASE DO *NOT* EDIT THIS FILE!
 ###########################################################################
 
-from CustomUI.VideoPanel import VideoPanel
 import wx
 import wx.xrc
 
@@ -47,9 +46,6 @@ class OVM_Frame ( wx.Frame ):
 		sbSizer1 = wx.StaticBoxSizer( wx.StaticBox( self.panel_mainvideo, wx.ID_ANY, u"Available Cameras" ), wx.VERTICAL )
 
 		bSizer32 = wx.BoxSizer( wx.VERTICAL )
-
-		self.Video_CycleCams_chkBox = wx.CheckBox( sbSizer1.GetStaticBox(), wx.ID_ANY, u"Cycle Cameras", wx.DefaultPosition, wx.DefaultSize, 0 )
-		bSizer32.Add( self.Video_CycleCams_chkBox, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
 
 		self.m_staticText22 = wx.StaticText( sbSizer1.GetStaticBox(), wx.ID_ANY, u"Number of feeds", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText22.Wrap( -1 )
@@ -249,7 +245,6 @@ class OVM_Frame ( wx.Frame ):
 		self.Bind( wx.EVT_MENU, self.Handle_MenuItem_Video, id = self.FileMenuItem_Video.GetId() )
 		self.Bind( wx.EVT_MENU, self.Handle_MenuItem_Settings, id = self.FileMenuItem_Settings.GetId() )
 		self.Bind( wx.EVT_MENU, self.Handle_MenuItem_Exit, id = self.FileMenuItem_Exit.GetId() )
-		self.Video_CycleCams_chkBox.Bind( wx.EVT_CHECKBOX, self.Handle_Video_EnDisCycle )
 		self.Video_NumFeeds_Sldr.Bind( wx.EVT_SCROLL_CHANGED, self.Handle_Video_NumFeeds )
 		self.Video_AvailCams_chkLst.Bind( wx.EVT_CHECKLISTBOX, self.Handle_CameraChkLst_Toggle )
 		self.Settings_AddCam_btn.Bind( wx.EVT_BUTTON, self.Handle_Setting_NewCameraBtn )
@@ -273,9 +268,6 @@ class OVM_Frame ( wx.Frame ):
 		event.Skip()
 
 	def Handle_MenuItem_Exit( self, event ):
-		event.Skip()
-
-	def Handle_Video_EnDisCycle( self, event ):
 		event.Skip()
 
 	def Handle_Video_NumFeeds( self, event ):

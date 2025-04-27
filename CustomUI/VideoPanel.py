@@ -4,6 +4,7 @@ Custom implementation of a WxPanel that will display a video from a given source
 
 import wx
 import cv2
+import numpy as np
 import threading
 import time
 from datetime import datetime, timedelta
@@ -40,6 +41,10 @@ class VideoPanel(wx.Panel):
         self.video_writer = None
         self.start_time = None
         self.duration = videoDuration #default Duration of the videos in minutes
+
+        #People detection setup
+        self.humanDetector = cv2.HOGDescriptor()
+        self.humanDetector.setSVMDetector(cv2.HOGDescriptor.getDefaultPeopleDetector())
 
     def start_stream(self):
         if self.capture_thread is not None and self.capture_thread.is_alive():
@@ -114,6 +119,13 @@ class VideoPanel(wx.Panel):
                     ret, frame = self.video_capture.read()
                     if ret:
                         self.error_text.Hide()
+                        
+                        #Detect people in image, returns bounding boxes for detected objects
+                        boxes, weights = self.humanDetector.detectMultiScale(frame, winStride=(8,8))
+                        boxes = np.array([[x, y, x + w, y + h] for (x, y, w, h) in boxes])
+                        for (xA, yA, xB, yB) in boxes:
+                            cv2.rectangle(frame, (xA, yA), (xB, yB), (0, 255, 0) , 2)
+
                         self.frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
                         if self.recording:
                             current_time = time.time()
