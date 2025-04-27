@@ -9,11 +9,11 @@ print(f"Open Vision Management Startup")
 
 app = wx.App()
 
-# import pkg_resources
+import pkg_resources
 #Ensure library versions are correct
 try:
-    # pkg_resources.require("opencv-python==4.10.0.84")
-    # pkg_resources.require("numpy==2.0.0")
+    pkg_resources.require("opencv-python==4.10.0.84")
+    pkg_resources.require("numpy==2.0.0")
     import OVM_UI_Adapater
     frame = OVM_UI_Adapater.OVM_UI_Adapater(None)
 
