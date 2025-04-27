@@ -53,7 +53,6 @@ class OVM_UI_Adapater( OVM_UI.OVM_Frame ):
 		for camName, camData in self.settings_model.get_CameraModel().items():
 			camera = Camera(camName, camData[0])
 			camera.set_Enable(camData[1])
-			print("Loaded Camera: " + camera.to_String())
 			self.camera_list.append(camera)
 		
 		self.Settings_FileSize_txtCtrl.SetValue(str(self.settings_model.get_FileSize()))

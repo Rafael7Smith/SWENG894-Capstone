@@ -9,6 +9,7 @@ import threading
 import time
 from datetime import datetime, timedelta
 import calendar
+import traceback
 
 class VideoPanel(wx.Panel):
     def __init__(self, parent, rtsp_url=0, camera_name="", savePath = "", videoDuration = 5, id=wx.ID_ANY, pos=wx.DefaultPosition, size=wx.DefaultSize, style=wx.BORDER_THEME, name=wx.PanelNameStr):
@@ -68,13 +69,13 @@ class VideoPanel(wx.Panel):
             video_width = int(self.video_capture.get(cv2.CAP_PROP_FRAME_WIDTH))
             video_height = int(self.video_capture.get(cv2.CAP_PROP_FRAME_HEIGHT))
             video_fps = float(self.video_capture.get(cv2.CAP_PROP_FPS))
-            print(f"Video Capture true: {video_width}, {video_height}, {video_fps}")
         else:
+            #Default Video for the cameras i've been developing with
             video_width = 704
             video_height = 480
             video_fps = 6.0
-        now = datetime.now()
 
+        now = datetime.now()
         fourcc = cv2.VideoWriter_fourcc(*'MP4V')
         time_interval = self.get_TimeInterval(now, self.duration)
         month_name = calendar.month_name[time_interval.month]
@@ -82,8 +83,6 @@ class VideoPanel(wx.Panel):
         file_string = f"{self.save_path}\{self.camera_name}_{date_string}.mp4"
         print(f"Recording Video to: {file_string}")
         self.video_writer = cv2.VideoWriter(file_string, fourcc, video_fps, (video_width,video_height))
-        if(self.video_writer.isOpened):
-            print("Video Writer success")
         return
     
     def stop_stream(self):
@@ -123,8 +122,11 @@ class VideoPanel(wx.Panel):
                         #Detect people in image, returns bounding boxes for detected objects
                         boxes, weights = self.humanDetector.detectMultiScale(frame, winStride=(8,8))
                         boxes = np.array([[x, y, x + w, y + h] for (x, y, w, h) in boxes])
-                        for (xA, yA, xB, yB) in boxes:
+                        for i, (xA, yA, xB, yB) in enumerate(boxes):
+                            if weights[i] < 0.5:
+                                continue #Filter out low confidence detections
                             cv2.rectangle(frame, (xA, yA), (xB, yB), (0, 255, 0) , 2)
+                            cv2.putText(frame, f"Person {i}", (xA +10, yA +10), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
 
                         self.frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
                         if self.recording:
@@ -144,7 +146,7 @@ class VideoPanel(wx.Panel):
             self.video_capture.release()
             self.Refresh()
         except Exception as e:
-            print(f"Error in Stream {self.rtsp_url}\n{e}\n")
+            print(f"Error in Stream {self.rtsp_url}\n{e}\n{traceback.format_exc()}")
             self.error_text.Show()
             self.error_text.SetLabelText("Error in Camera\n" + str(self.rtsp_url))
             self.Refresh()
