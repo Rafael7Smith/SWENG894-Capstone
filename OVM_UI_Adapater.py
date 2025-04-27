@@ -24,6 +24,7 @@ class OVM_UI_Adapater( OVM_UI.OVM_Frame ):
 		self.camera_list = []
 		self.enabled_camera_list = []
 		self.video_panels = []
+		self.enabled_video_panels = []
 
 		# Data store model for Application settings
 		self.settings_model = OVM_Settings_model.OVM_Settings()
@@ -192,6 +193,7 @@ class OVM_UI_Adapater( OVM_UI.OVM_Frame ):
 	########### End Event Handler Implementation ###########
 
 	def update_video_panels(self, num_feeds):
+
 		# TODO: Redo this such that enabled cameras is taken into account:
 			# If Cycling enabled
 				# cycle through camera feeds by hiding/showing feeds
