@@ -5,6 +5,7 @@ import OVM_UI
 import OVM_Settings_model
 from CustomUI.VideoPanel import VideoPanel
 from OVM_IPCamera import Camera
+from OVM_FileManager import OVM_FileManager
 
 DEBUG = False
 # Implementing OVM_Frame
@@ -38,6 +39,13 @@ class OVM_UI_Adapater( OVM_UI.OVM_Frame ):
   
 		self.Show()
 
+		#Storage Management System
+		self.storage_manager = OVM_FileManager(self.settings_model.get_Savelocation(), 
+										 		self.settings_model.get_FileSize(),
+												self.settings_model.get_SaveSize())
+		
+		self.storage_manager.start_monitoring()
+		
 	def load_PreviousSettings(self):
 		# Load setting values
 		self.Video_NumFeeds_Sldr.SetValue(self.settings_model.get_VideoFeed())
@@ -64,6 +72,8 @@ class OVM_UI_Adapater( OVM_UI.OVM_Frame ):
 	def Handle_App_Close( self, event ):
 		self.update_video_panels(0)
 
+		# Save record files or not
+		self.settings_model.set_EnableSaving(self.Settings_EnableSave_chkBox.GetValue())
 		# Save the File Directory
 		self.settings_model.set_SaveLocation(self.Settings_SaveLoc_dirPck.GetPath())
 		# Save the Directory Size
@@ -181,6 +191,11 @@ class OVM_UI_Adapater( OVM_UI.OVM_Frame ):
 	########### End Event Handler Implementation ###########
 
 	def update_video_panels(self, num_feeds):
+		# TODO: Redo this such that enabled cameras is taken into account:
+			# If Cycling enabled
+				# cycle through camera feeds by hiding/showing feeds
+			# else
+				# show only the first n (where n = number of feeds) cameras, hide rest
 		#Stop and remove existing panels if reducing the number
 		while len(self.video_panels) > num_feeds:
 			videoPanel = self.video_panels.pop()

@@ -1,3 +1,6 @@
+"""
+Class to contain all relevant information around the cameras
+"""
 class Camera():
     def __init__(self, name, address):
         self.camera_name = name

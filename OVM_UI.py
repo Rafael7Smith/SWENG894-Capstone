@@ -69,7 +69,7 @@ class OVM_Frame ( wx.Frame ):
 
 		bSizer3.Add( sbSizer1, 1, wx.EXPAND, 5 )
 
-		self.self.gridsizer_videofeeds = wx.GridSizer( 0, 2, 0, 0 )
+		self.gridsizer_videofeeds = wx.GridSizer( 0, 2, 0, 0 )
 
 
 		bSizer3.Add( self.gridsizer_videofeeds, 3, wx.EXPAND, 5 )

@@ -1,6 +1,9 @@
 import os
 from configparser import ConfigParser
 
+"""
+Settings management class, responsible for saving and loading settings from a "settings.ini" file
+"""
 class OVM_Settings():
     def __init__(self, config_file='settings.ini'):
         self.config_file = config_file
@@ -31,7 +34,6 @@ class OVM_Settings():
 
         if 'CameraModel' in self.config:
             for key in self.config['CameraModel']:
-                print("Rafa, key is " + key)
                 ip, status = self.config.get('CameraModel', key).split(',')
                 self.camera_model[key] = (ip, status)
 
