@@ -69,19 +69,7 @@ class OVM_Frame ( wx.Frame ):
 
 		bSizer3.Add( sbSizer1, 1, wx.EXPAND, 5 )
 
-		self.gridsizer_videofeeds = wx.GridSizer( 0, 2, 0, 0 )
-
-		self.Video_videoPanel_0 = VideoPanel( self.panel_mainvideo, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.BORDER_THEME )
-		self.gridsizer_videofeeds.Add( self.Video_videoPanel_0, 1, wx.EXPAND |wx.ALL, 5 )
-
-		self.Video_videoPanel_1 = VideoPanel( self.panel_mainvideo, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.BORDER_THEME )
-		self.gridsizer_videofeeds.Add( self.Video_videoPanel_1, 1, wx.EXPAND |wx.ALL, 5 )
-
-		self.Video_videoPanel_11 = VideoPanel( self.panel_mainvideo, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.BORDER_THEME )
-		self.gridsizer_videofeeds.Add( self.Video_videoPanel_11, 1, wx.EXPAND |wx.ALL, 5 )
-
-		self.Video_videoPanel_12 = VideoPanel( self.panel_mainvideo, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.BORDER_THEME )
-		self.gridsizer_videofeeds.Add( self.Video_videoPanel_12, 1, wx.EXPAND |wx.ALL, 5 )
+		self.self.gridsizer_videofeeds = wx.GridSizer( 0, 2, 0, 0 )
 
 
 		bSizer3.Add( self.gridsizer_videofeeds, 3, wx.EXPAND, 5 )
@@ -208,7 +196,7 @@ class OVM_Frame ( wx.Frame ):
 
 		bSizer19 = wx.BoxSizer( wx.HORIZONTAL )
 
-		self.m_staticText16 = wx.StaticText( self.panel_mainsettings, wx.ID_ANY, u"Storage Size", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText16 = wx.StaticText( self.panel_mainsettings, wx.ID_ANY, u"Storage Size (GB)", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText16.Wrap( -1 )
 
 		bSizer19.Add( self.m_staticText16, 0, wx.ALL, 5 )
@@ -221,7 +209,7 @@ class OVM_Frame ( wx.Frame ):
 
 		bSizer191 = wx.BoxSizer( wx.HORIZONTAL )
 
-		self.m_staticText161 = wx.StaticText( self.panel_mainsettings, wx.ID_ANY, u"File Size", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText161 = wx.StaticText( self.panel_mainsettings, wx.ID_ANY, u"File Size (Minutes)", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText161.Wrap( -1 )
 
 		bSizer191.Add( self.m_staticText161, 0, wx.ALL, 5 )
@@ -257,6 +245,7 @@ class OVM_Frame ( wx.Frame ):
 		self.Centre( wx.BOTH )
 
 		# Connect Events
+		self.Bind( wx.EVT_CLOSE, self.Handle_App_Close )
 		self.Bind( wx.EVT_MENU, self.Handle_MenuItem_Video, id = self.FileMenuItem_Video.GetId() )
 		self.Bind( wx.EVT_MENU, self.Handle_MenuItem_Settings, id = self.FileMenuItem_Settings.GetId() )
 		self.Bind( wx.EVT_MENU, self.Handle_MenuItem_Exit, id = self.FileMenuItem_Exit.GetId() )
@@ -274,6 +263,9 @@ class OVM_Frame ( wx.Frame ):
 
 
 	# Virtual event handlers, override them in your derived class
+	def Handle_App_Close( self, event ):
+		event.Skip()
+
 	def Handle_MenuItem_Video( self, event ):
 		event.Skip()
 

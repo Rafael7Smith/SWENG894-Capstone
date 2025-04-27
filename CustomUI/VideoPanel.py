@@ -6,18 +6,18 @@ import wx
 import cv2
 import threading
 import time
-import datetime
+from datetime import datetime, timedelta
 import calendar
 
 class VideoPanel(wx.Panel):
-    def __init__(self, parent, rtsp_url=0, camera_name="", savePath = "", id=wx.ID_ANY, pos=wx.DefaultPosition, size=wx.DefaultSize, style=wx.BORDER_THEME, name=wx.PanelNameStr):
+    def __init__(self, parent, rtsp_url=0, camera_name="", savePath = "", videoDuration = 5, id=wx.ID_ANY, pos=wx.DefaultPosition, size=wx.DefaultSize, style=wx.BORDER_THEME, name=wx.PanelNameStr):
         super().__init__(parent)
 
         self.capture_thread = None
         self.stop_event = threading.Event()
         self.rtsp_url = rtsp_url
         self.camera_name = camera_name
-        self.save_path = ""
+        self.save_path = savePath
         self.video_capture = None
 
         # Default to Error with video stream
@@ -39,7 +39,7 @@ class VideoPanel(wx.Panel):
         self.recording = True
         self.video_writer = None
         self.start_time = None
-        self.duration = 60 #Duration of the videos in minutes
+        self.duration = videoDuration #default Duration of the videos in minutes
 
     def start_stream(self):
         if self.capture_thread is not None and self.capture_thread.is_alive():
@@ -47,7 +47,8 @@ class VideoPanel(wx.Panel):
         self.stop_event.clear()
 
         self.start_time = time.time()
-        self.start_new_recording()
+        if self.recording:
+            self.start_new_recording()
 
         self.capture_thread = threading.Thread(target=self.capture_frames)
         self.capture_thread.daemon = True
@@ -67,13 +68,13 @@ class VideoPanel(wx.Panel):
             video_width = 704
             video_height = 480
             video_fps = 6.0
-        now = datetime.datetime.now()
+        now = datetime.now()
 
         fourcc = cv2.VideoWriter_fourcc(*'MP4V')
-        print(f"Save path is? {self.save_path}")
-        month_name = calendar.month_name[now.month]
-        date_string = f"T{now.hour}{now.minute}_{now.year}{month_name}{now.day}"
-        file_string = f"Camera_{self.camera_name}_{date_string}.mp4"
+        time_interval = self.get_TimeInterval(now, self.duration)
+        month_name = calendar.month_name[time_interval.month]
+        date_string = f"{time_interval.year}{month_name}{time_interval.day}_{time_interval.hour}{time_interval.minute}"
+        file_string = f"{self.save_path}\{self.camera_name}_{date_string}.mp4"
         print(f"Recording Video to: {file_string}")
         self.video_writer = cv2.VideoWriter(file_string, fourcc, video_fps, (video_width,video_height))
         if(self.video_writer.isOpened):
@@ -88,6 +89,16 @@ class VideoPanel(wx.Panel):
         self.timer.Stop()
         if self.video_writer:
             self.video_writer.release()
+
+    def start_recording(self):
+        self.recording = True
+        self.start_new_recording()
+
+    def stop_recording(self):
+        self.recording = False
+
+    def set_duration(self, duration):
+        self.duration = duration
 
     def set_source(self, rtsp_url=0):
         self.rtsp_url = rtsp_url
@@ -137,3 +148,7 @@ class VideoPanel(wx.Panel):
             bitmap = wx.Bitmap.FromBuffer(width, height, resized_frame)
             dc = wx.BufferedPaintDC(self)
             dc.DrawBitmap(bitmap, 0, 0)
+
+    def get_TimeInterval(self, start_time, duration):
+        interval_start = start_time - timedelta(minutes=start_time.minute % duration)
+        return interval_start

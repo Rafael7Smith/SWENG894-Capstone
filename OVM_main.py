@@ -5,12 +5,11 @@ Starts up the WxPython app
 
 import wx
 
-
 print(f"Open Vision Management Startup")
 
 app = wx.App()
 
-import pkg_resources
+# import pkg_resources
 #Ensure library versions are correct
 try:
     # pkg_resources.require("opencv-python==4.10.0.84")

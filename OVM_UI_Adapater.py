@@ -6,35 +6,31 @@ import OVM_Settings_model
 from CustomUI.VideoPanel import VideoPanel
 from OVM_IPCamera import Camera
 
-
-
-DEBUG = True
+DEBUG = False
 # Implementing OVM_Frame
 class OVM_UI_Adapater( OVM_UI.OVM_Frame ):
 	def __init__( self, parent ):
 		OVM_UI.OVM_Frame.__init__( self, parent )
 
-		# Set starting configuration
+		# Set default configuration
 		self.panel_mainsettings.Hide()
 		self.panel_mainvideo.Show()
 		self.Video_NumFeeds_Sldr.SetValue(4)
 		self.Video_CycleCams_chkBox.SetValue(False)
 		self.Video_AvailCams_chkLst.Clear()
 
-		# Data store Model for Video Panels
-		self.video_panels = []
-		self.video_panels.append(self.Video_videoPanel_0)
-		self.video_panels.append(self.Video_videoPanel_1)
-		self.video_panels.append(self.Video_videoPanel_11)
-		self.video_panels.append(self.Video_videoPanel_12)
-
 		# Data store Model for Cameras
 		self.camera_list = []
 		self.enabled_camera_list = []
+		self.video_panels = []
 
 		# Data store model for Application settings
 		self.settings_model = OVM_Settings_model.OVM_Settings()
-			#TODO: Sprint 3 Tickets #25 and #26 to save and load settings functionality
+		print(self.settings_model.to_String())
+		self.load_PreviousSettings()
+
+		if len(self.camera_list) > 0:
+			self.populate_PreviousCameras()
 
 		# Populate a debug list of cameras
 		if(DEBUG):
@@ -42,8 +38,48 @@ class OVM_UI_Adapater( OVM_UI.OVM_Frame ):
   
 		self.Show()
 
+	def load_PreviousSettings(self):
+		# Load setting values
+		self.Video_NumFeeds_Sldr.SetValue(self.settings_model.get_VideoFeed())
+		
+		for camName, camData in self.settings_model.get_CameraModel().items():
+			camera = Camera(camName, camData[0])
+			camera.set_Enable(camData[1])
+			print("Loaded Camera: " + camera.to_String())
+			self.camera_list.append(camera)
+		
+		self.Settings_FileSize_txtCtrl.SetValue(str(self.settings_model.get_FileSize()))
+		self.Settings_SaveLoc_dirPck.SetPath(self.settings_model.get_Savelocation())
+		self.Settings_StorageSize_txtCtrl.SetValue(str(self.settings_model.get_SaveSize()))
+		self.Settings_EnableSave_chkBox.SetValue(self.settings_model.get_EnableSaving())
 
+		self.update_CameraLists()
+		return
+	
+	def populate_PreviousCameras(self):
+		self.update_video_panels(len(self.camera_list))
+		return
+	
 	########### Event Handler implementation ###########
+	def Handle_App_Close( self, event ):
+		self.update_video_panels(0)
+
+		# Save the File Directory
+		self.settings_model.set_SaveLocation(self.Settings_SaveLoc_dirPck.GetPath())
+		# Save the Directory Size
+		self.settings_model.set_SaveSize(self.Settings_StorageSize_txtCtrl.GetValue())
+		# Save the File Size
+		self.settings_model.set_FileSize(self.Settings_FileSize_txtCtrl.GetValue())
+		#Save the camera model
+		for camera in self.camera_list:
+			self.settings_model.set_CameraModel(camera.get_Name(), camera.get_Address(), camera.is_Enabled())
+		
+
+		self.settings_model.save_settings()
+		print("Saved Application Settings, exiting")
+		self.Destroy()
+		return
+	
 	def Handle_MenuItem_Video( self, event ):
 		self.panel_mainsettings.Hide()
 		self.panel_mainvideo.Show()
@@ -61,8 +97,8 @@ class OVM_UI_Adapater( OVM_UI.OVM_Frame ):
 		return
 
 	def Handle_MenuItem_Exit( self, event ):
-		self.update_video_panels(0)
-		self.Close(True)
+		nullEvent = wx.CloseEvent()
+		self.Handle_App_Close(nullEvent)
 		return
 	
 	def Handle_Video_EnDisCycle( self, event ):
@@ -112,11 +148,34 @@ class OVM_UI_Adapater( OVM_UI.OVM_Frame ):
 		event.Skip()
 
 	def Handle_Setting_EnDisSaving( self, event ):
-		self.todo_feature_test()
+		record_video = self.Settings_EnableSave_chkBox.GetValue()
+		wx.MessageBox("Enable Saving is: " + record_video)
+		# if(event.GetValue()):
+		for video in self.video_panels:
+			if(record_video):
+				video.start_recording()
+			else:
+				video.stop_recording()
+
 		event.Skip()
 
 	def Handle_Setting_SaveLocation( self, event ):
-		self.todo_feature_test()
+		self.settings_model.set_SaveLocation(event.GetPath())
+		self.Settings_SaveLoc_dirPck.SetPath(event.GetPath())
+		event.Skip()
+
+	def Handle_Setting_SaveSettings(self, event):
+		# Save If recording is enabled
+		self.settings_model.set_EnableSaving(self.Settings_EnableSave_chkBox.GetValue())
+		# Save the File Directory
+		self.settings_model.set_SaveLocation(self.Settings_SaveLoc_dirPck.GetPath())
+		# Save the Directory Size
+		self.settings_model.set_SaveSize(self.Settings_StorageSize_txtCtrl.GetValue())
+		# Save the File Size
+		recording_time = self.Settings_FileSize_txtCtrl.GetValue()
+		self.settings_model.set_FileSize(recording_time)
+		for video in self.video_panels:
+			video.set_duration(recording_time)
 		event.Skip()
 
 	########### End Event Handler Implementation ###########
@@ -131,7 +190,7 @@ class OVM_UI_Adapater( OVM_UI.OVM_Frame ):
 
 		# Create new panels if increasing the number, Add to tracking list, add to the sizer
 		while len(self.video_panels) < num_feeds:
-			videoPanel = VideoPanel(self.panel_mainvideo, 0, savePath=self.settings_model.getSavePath())
+			videoPanel = VideoPanel(self.panel_mainvideo, rtsp_url=0, savePath=self.settings_model.get_Savelocation(), videoDuration=self.settings_model.get_FileSize())
 			self.video_panels.append(videoPanel)
 			self.gridsizer_videofeeds.Add(videoPanel,1,wx.EXPAND)
 
